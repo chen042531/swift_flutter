@@ -38,32 +38,56 @@ import CoreMotion
         result(Int(device.batteryLevel * 100))
       }
     }
-    
+    static func send(x:Double,sink: FlutterEventSink)->(){
+        print("ggg",x)
+//        let data = String(format: "%f", x)
+        sink(Int(x))
+    }
     class SwiftStreamHandler: NSObject, FlutterStreamHandler {
-        public func onListen(withArguments arguments: Any?, eventSink events: @escaping FlutterEventSink) -> FlutterError? {
+        let senInfo = sensorInfo()
+         let manager: CMMotionManager = CMMotionManager()
+        public func onListen(withArguments arguments: Any?, eventSink events:  @escaping FlutterEventSink) -> FlutterError? {
             print("fuck")
-            var a = 1.2
-            getAccelerometerValues() { (X, Y, Z) -> () in
-            //            gg = String(X)
-//                        DispatchQueue.main.async {
-//                            self.x.text=String(X)
-//                        }
-                a=X
-//                events()
-                        print("hahahhhh",String(format: "%f", X))
-            }
-            print(a)
-//            let a: Double = 1.5
-            let b: String = String(format: "%f", a)
-
-            print("b: \(b)") // b: 1.500000
-//            events(b)
-//            events("truehaggha") // any generic type or more compex dictionary of [String:Any]
-            events(FlutterError(code: "ERROR_CODE",
-                                 message: "Detailed message",
-                                 details: nil)) // in case of errors
             
-            events(FlutterEndOfEventStream) // when stream is over
+            manager.accelerometerUpdateInterval = 0.5
+//            events("dd")
+                        manager.startAccelerometerUpdates(to: OperationQueue(), withHandler: {
+                                (data, error) in
+                                var g=data!.acceleration.x
+                            print(g)
+                            events(String(g))
+//                            send(x: g, sink: events)
+//                                valX =
+//                                valY = data!.acceleration.y
+//                                valZ = data!.acceleration.z
+         
+            //                        sensorInfo.notify(X: valX, ev: self.eve)
+                                }
+                            
+            //                    self.delegate?.retrieveAccelerometerValues(x: valX, y: valY, z: valZ)
+        )
+//            print(events)
+//            senInfo.getAccelerometerValues() { (X, Y, Z) -> () in
+//            //            gg = String(X)
+//                        DispatchQueue.main.async {
+//
+//                        }
+////                events(X)
+//                send(x: X,sink: events)
+//                        print("hahahhhh",X)
+//            }
+//
+            
+//
+                    
+//            events("bgbg")
+            
+//            events(String(0.32442323))
+//            events(FlutterError(code: "ERROR_CODE",
+//                                 message: "Detailed message",
+//                                 details: nil)) // in case of errors
+//
+//            events(FlutterEndOfEventStream) // when stream is over
             return nil
         }
 
@@ -74,39 +98,3 @@ import CoreMotion
 
 }
 
-var manager: CMMotionManager=CMMotionManager()
-
-public func getAccelerometerValues (values: ((Double, Double, Double) -> ())? ){
-        var valX: Double!
-        var valY: Double!
-        var valZ: Double!
-    if manager.isAccelerometerAvailable {
-        manager.accelerometerUpdateInterval = 0.1
-        DispatchQueue.main.asyncAfter(deadline: .now() + 5.0) { // Change `2.0` to the desired number of seconds.
-           // Code you want to be delayed
-            manager.accelerometerUpdateInterval = 1
-        }
-        DispatchQueue.main.asyncAfter(deadline: .now() + 8.0) { // Change `2.0` to the desired number of seconds.
-           // Code you want to be delayed
-            manager.accelerometerUpdateInterval = 0.5
-        }
-        manager.startAccelerometerUpdates(to: OperationQueue(), withHandler: {
-                (data, error) in
-
-//                print("yyy")
-                valX = data!.acceleration.x
-                valY = data!.acceleration.y
-                valZ = data!.acceleration.z
-//                print(valX)
-//                print("dd",valX ?? "fff")
-                if values != nil{
-                    values!( valX,valY, valZ)
-                }
-//                print("startacc")
-
-            })
-//            print("avale")
-        } else {
-            print("The Accelerometer is not available")
-        }
-    }

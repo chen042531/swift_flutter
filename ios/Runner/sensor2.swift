@@ -8,27 +8,20 @@
 
 import Foundation
 import CoreMotion
-class sensorInfo{
+class sensor2:Datalistener{
     var manager: CMMotionManager = CMMotionManager()
-   
-    init() {
-    
-    }
 //    init() {
-//
-////        eve("gghgh")
+//        manager = CMMotionManager()
 //    }
-    public static func notify(X:Double,ev:FlutterEventSink){
-        print(X,"ggggggg")
-        ev("gghgh")
+    func notify(item:Double) {
+        
     }
     public func getAccelerometerValues (values: ((Double, Double, Double) -> ())? ){
         print("fuckrrrrrrrrrr")
             var valX: Double!
             var valY: Double!
             var valZ: Double!
-            
-        if manager.isAccelerometerAvailable {
+        if manager.isAccelerometerAvailable ?? true {
             manager.accelerometerUpdateInterval = 0.5
             manager.startAccelerometerUpdates(to: OperationQueue(), withHandler: {
                     (data, error) in
@@ -38,17 +31,13 @@ class sensorInfo{
                     valY = data!.acceleration.y
                     valZ = data!.acceleration.z
     //                print(valX)
-                
                     if values != nil{
                         values!( valX,valY, valZ)
-//                        sensorInfo.notify(X: valX, ev: self.eve)
                     }
-                
 //                    self.delegate?.retrieveAccelerometerValues(x: valX, y: valY, z: valZ)
                 })
             } else {
                 print("The Accelerometer is not available")
             }
-//        self.eve("valX")
         }
 }

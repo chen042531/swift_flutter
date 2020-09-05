@@ -75,6 +75,7 @@ class _MyHomePageState extends State<MyHomePage> {
   static const EventChannel eventSensorChannel = EventChannel('samples.flutter.io/sensor');
   String _sensing = "jj";
   void _onSensingEvent(Object event) {
+    print('$event');
     setState(() {
       _sensing = event;
 
@@ -83,14 +84,15 @@ class _MyHomePageState extends State<MyHomePage> {
 
   void _onSensingError(Object error) {
     setState(() {
-      _chargingStatus = 'sensing error:ggnrrr.';
+      // _sensing = 'sensing error:${error}';
     });
   }
   @override
   void initState() {
     super.initState();
-    eventChargingChannel.receiveBroadcastStream().listen(_onChargingEvent, onError: _onChargingError);
     eventSensorChannel.receiveBroadcastStream().listen(_onSensingEvent, onError: _onSensingError);
+    // eventChargingChannel.receiveBroadcastStream().listen(_onChargingEvent, onError: _onChargingError);
+
   }
   Future<void> _getBatteryLevel() async {
     String batteryLevel;
